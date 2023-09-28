@@ -3,7 +3,7 @@
  {:aliases [:cljs]}
 
  :dev-http
- {8020 "public"}
+ {3000 "public"}
 
  :builds
  {:app
