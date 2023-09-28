@@ -1,5 +1,5 @@
-(ns tailwind.events
-  (:require [tailwind.db :as db]))
+(ns advertisers.events
+  (:require [advertisers.db :as db]))
 
 (defn login
   []

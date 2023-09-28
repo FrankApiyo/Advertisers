@@ -12,4 +12,4 @@
    :asset-path "/js"
    :modules
    {:main
-    {:init-fn tailwind.app/init}}}}}
+    {:init-fn advertisers.app/init}}}}}

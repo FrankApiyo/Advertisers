@@ -1,13 +1,10 @@
-(ns tailwind.app
+(ns advertisers.app
   (:require [reagent.dom :as dom]
-            [tailwind.views :as views]
-            [tailwind.db :as db]))
+            [advertisers.views :as views]))
 
 (defn app
   []
-  (if (:auth? @db/state)
-    [views/authenticated]
-    [views/public]))
+  [views/overview])
 
 ;; start is called by init and after code reloading finishes
 (defn ^:dev/after-load start []
