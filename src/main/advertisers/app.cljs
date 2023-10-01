@@ -19,6 +19,7 @@
   ;; so it is available even in :advanced release builds
   (js/console.log "init")
   (re-frame/dispatch [::events/fetch-advertisers])
+  (re-frame/dispatch [::events/fetch-ad-statistics])
   (start))
 
 ;; this is called before any code is reloaded
