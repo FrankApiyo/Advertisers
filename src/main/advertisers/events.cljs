@@ -31,6 +31,15 @@
    (assoc db :error-state?
           true)))
 
+(re-frame/reg-event-db
+ ::sort-advertisers
+ (fn [db [_ sort-field]]
+   (assoc db
+          :reverse-sort (not (:reverse-sort db))
+          :advertisers
+          (sort sort-field (:advertisers db))
+          :sort-field sort-field)))
+
 (comment
   @(re-frame/subscribe [::subs/loading?]))
 
