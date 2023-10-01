@@ -6,7 +6,10 @@
   (let [advertisers @(re-frame/subscribe
                       [::subs/advertisers])
         loading? @(re-frame/subscribe
-                   [::subs/loading?])]
+                   [::subs/loading?])
+        error-state?
+        @(re-frame/subscribe
+          [::subs/error-state?])]
     [:table {:class "bg-[#222] border-collapse border border-slate-500 w-11/12 m-5 text-justify border-collapse"}
      [:thead
       [:tr
@@ -14,9 +17,14 @@
        [:th {:class "border border-[#343434]-600 text-justify"} "Creation date"]
        [:th {:class "border border-[#343434]-600 text-justify"} "# Campaigns"]]]
      [:tbody
-      (if (or loading? (nil? loading?))
+      (cond
+        error-state?
+        [:tr
+         [:td {:class "border border-[#343434]-700"} "Could not load data :("]]
+        (or loading? (nil? loading?))
         [:tr
          [:td {:class "border border-[#343434]-700"} "Loading..."]]
+        :else
         (cons
          [:<>]
          (mapv (fn [{:keys [name createdAt campaignIds]}]

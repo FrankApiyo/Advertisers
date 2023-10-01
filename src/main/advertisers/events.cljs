@@ -27,8 +27,9 @@
 
 (re-frame/reg-event-db
  ::failure-fetch-advertisers
- (fn [_db [_ response]]
-   (js/console.log (clj->js response))))
+ (fn [db [_ _response]]
+   (assoc db :error-state?
+          true)))
 
 (comment
   @(re-frame/subscribe [::subs/loading?]))
@@ -36,7 +37,9 @@
 (re-frame/reg-event-fx
  ::fetch-advertisers
  (fn [{:keys [db]}]
-   {:db   (assoc db :loading? true)
+   {:db   (assoc db
+                 :loading? true
+                 :error-state? false)
     :http-xhrio
     {:method          :get
      :uri             "https://5b87a97d35589600143c1424.mockapi.io/api/v1/advertisers"

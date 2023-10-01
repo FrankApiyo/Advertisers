@@ -10,3 +10,8 @@
  ::advertisers
  (fn [db]
    (:advertisers db)))
+
+(re-frame/reg-sub
+ ::error-state?
+ (fn [db]
+   (:error-state? db)))
