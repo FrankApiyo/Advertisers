@@ -23,4 +23,3 @@
    [:br]
    [table]])
 
-; TODO: Work on events and subs to get everthing the way it should be
