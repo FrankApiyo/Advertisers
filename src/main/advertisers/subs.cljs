@@ -5,3 +5,8 @@
  ::loading?
  (fn [db]
    (:loading?  db)))
+
+(re-frame/reg-sub
+ ::advertisers
+ (fn [db]
+   (:advertisers db)))

@@ -21,7 +21,9 @@
 (re-frame/reg-event-db
  ::success-fetch-advertisers
  (fn [db [_ response]]
-   (assoc-in db [:advertisers] response)))
+   (assoc db
+          :advertisers response
+          :loading? false)))
 
 (re-frame/reg-event-db
  ::failure-fetch-advertisers
