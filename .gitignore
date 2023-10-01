@@ -10,4 +10,5 @@
 /*.iml
 /.nrepl-port
 /.idea
+.calva
 shadow-cljs-tailwind.iml
