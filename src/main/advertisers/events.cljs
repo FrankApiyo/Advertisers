@@ -41,14 +41,18 @@
           :sort-field sort-field)))
 
 (comment
-  @(re-frame/subscribe [::subs/loading?]))
+  @(re-frame/subscribe [::subs/advertisers])
+  ;; (enrich-advertisers @(re-frame/subscribe [::subs/advertisers])
+  ;;                     @(re-frame/subscribe [::subs/add-statistics]))
+  (first (filter #(= "1" (:advertiserId %))
+                 @(re-frame/subscribe [::subs/add-statistics]))))
+
 
 (re-frame/reg-event-db
  ::success-fetch-ad-statistics
  (fn [db [_ response]]
-   ;; use this data to enrich advertisers data
    (assoc db
-          :add-statistics response
+          :statistics response
           :stats-loading? false)))
 
 (re-frame/reg-event-db

@@ -7,7 +7,7 @@
 
 (defn table []
   (let [advertisers @(re-frame/subscribe
-                      [::subs/advertisers])
+                      [::subs/enriched-advertisers])
         loading? @(re-frame/subscribe
                    [::subs/loading?])
         error-state?
@@ -19,15 +19,23 @@
        [:th {:class "border border-[#343434]-600 text-justify"
              :on-click #(re-frame/dispatch
                          [::events/sort-advertisers :name])}
-        "Advertiser"]
+        "ADVERTISERS"]
        [:th {:class "border border-[#343434]-600 text-justify"
              :on-click #(re-frame/dispatch
                          [::events/sort-advertisers :createdAt])}
-        "Creation date"]
+        "CREATION DATA"]
        [:th {:class "border border-[#343434]-600 text-justify"
              :on-click #(re-frame/dispatch
                          [::events/sort-advertisers :campaignIds])}
-        "# Campaigns"]]]
+        "# CAMPAIGNS"]
+       [:th {:class "border border-[#343434]-600 text-justify"
+             :on-click #(re-frame/dispatch
+                         [::events/sort-advertisers :impressions])}
+        "IMPRESSIONS"]
+       [:th {:class "border border-[#343434]-600 text-justify"
+             :on-click #(re-frame/dispatch
+                         [::events/sort-advertisers :clicks])}
+        "CLICKS"]]]
      [:tbody
       (cond
         error-state?
@@ -38,15 +46,20 @@
          [:td {:class "border border-[#343434]-700"} "Loading..."]]
         :else
         (cons
-         [:<>]
-         (mapv (fn [{:keys [name createdAt campaignIds]}]
+         [:<> {:key "random-key"}]
+         (mapv (fn [{:keys [name createdAt campaignIds impressions clicks id]}]
                  [:tr
+                  {:key id}
                   [:td
                    {:class "border border-[#343434]-700"} name]
                   [:td
                    {:class "border border-[#343434]-700"} createdAt]
                   [:td
-                   {:class "border border-[#343434]-700"} (count campaignIds)]])
+                   {:class "border border-[#343434]-700"} (count campaignIds)]
+                  [:td
+                   {:class "border border-[#343434]-700"} impressions]
+                  [:td
+                   {:class "border border-[#343434]-700"} clicks]])
                advertisers)))]]))
 
 (defn overview []
