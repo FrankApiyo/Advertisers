@@ -32,13 +32,10 @@
 (re-frame/reg-event-fx
  ::success-fetch-advertisers
  (fn [{:keys [db]} [_ response]]
-   (let [[sort-name reverse?]
-         (get-url-search-params)]
-     {:fx [[:dispatch
-            [::sort-advertisers (keyword sort-name) reverse?]]]
-      :db (assoc db
-                 :advertisers response
-                 :loading? false)})))
+   {:fx [[:dispatch [::fetch-ad-statistics]]]
+    :db (assoc db
+               :advertisers response
+               :loading? false)}))
 
 (re-frame/reg-event-db
  ::failure-fetch-advertisers
@@ -78,12 +75,12 @@
              [:dispatch [::update-current-path "reverse" (str (or reverse? false))]]]
         :db (assoc db
                    :reverse-sort (not reverse?)
-                   :advertisers
+                   :enriched-advertisers
                    (sort-by sort-field
                             (if-not reverse?
                               <
                               >)
-                            (:advertisers db))
+                            (:enriched-advertisers db))
                    :sort-field sort-field)}))))
 
 (comment
@@ -102,14 +99,27 @@
              "true" true
              false)))
 
+(defn enrich-advertisers
+  [advertisers stats]
+  (mapv
+   (fn [{:keys [id] :as advertiser}]
+     (let [stats-for-id (first (filter #(= id (:advertiserId %))
+                                       stats))]
+       (merge stats-for-id advertiser)))
+   advertisers))
+
 (re-frame/reg-event-fx
  ::success-fetch-ad-statistics
  (fn [{:keys [db]} [_ response]]
    (let [[sort-name reverse?]
          (get-url-search-params)]
-     {:fx [#_[:dispatch
-              [::sort-advertisers (:keyword sort-name) reverse?]]]
+     {:fx [[:dispatch
+            [::sort-advertisers (keyword sort-name) reverse?]]]
       :db (assoc db
+                 :enriched-advertisers
+                 (enrich-advertisers
+                  (:advertisers db)
+                  response)
                  :statistics response
                  :stats-loading? false)})))
 

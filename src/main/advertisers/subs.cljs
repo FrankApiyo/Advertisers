@@ -31,12 +31,5 @@
 
 (re-frame/reg-sub
  ::enriched-advertisers
- :<- [::advertisers]
- :<- [::statistics]
- (fn [[advertisers stats]]
-   (mapv
-    (fn [{:keys [id] :as advertiser}]
-      (let [stats-for-id (first (filter #(= id (:advertiserId %))
-                                        stats))]
-        (merge stats-for-id advertiser)))
-    advertisers)))
+ (fn [db]
+   (:enriched-advertisers db)))

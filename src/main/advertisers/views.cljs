@@ -67,4 +67,3 @@
    [:p "Overview of advertisers"]
    [:br]
    [table]])
-

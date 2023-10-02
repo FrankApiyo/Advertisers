@@ -18,8 +18,7 @@
   ;; this is called in the index.html and must be exported
   ;; so it is available even in :advanced release builds
   (js/console.log "init")
-  (re-frame/dispatch-sync [::events/fetch-advertisers])
-  (re-frame/dispatch-sync [::events/fetch-ad-statistics])
+  (re-frame/dispatch [::events/fetch-advertisers])
   (start))
 
 ;; this is called before any code is reloaded
