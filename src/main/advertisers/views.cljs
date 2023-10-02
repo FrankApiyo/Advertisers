@@ -57,9 +57,11 @@
                   [:td
                    {:class "border border-[#343434]-700"} (count campaignIds)]
                   [:td
-                   {:class "border border-[#343434]-700"} impressions]
+                   {:class "border border-[#343434]-700"} (or impressions
+                                                              "n/a")]
                   [:td
-                   {:class "border border-[#343434]-700"} clicks]])
+                   {:class "border border-[#343434]-700"} (or clicks
+                                                              "n/a")]])
                advertisers)))]]))
 
 (defn overview []
