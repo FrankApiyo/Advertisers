@@ -18,12 +18,27 @@
   (let [dropdown (:user-dropdown? @db/state)]
     (swap! db/state assoc :user-dropdown? (not dropdown))))
 
-(re-frame/reg-event-db
+(defn get-url-search-params
+  []
+  (let [url (-> js/document .-location .-search)
+        url-params (js/URLSearchParams. url)
+        sort-name (.get url-params "sort-field")
+        reverse? (.get url-params "reverse")]
+    [sort-name (condp = reverse?
+                 "false" false
+                 "true" true
+                 false)]))
+
+(re-frame/reg-event-fx
  ::success-fetch-advertisers
- (fn [db [_ response]]
-   (assoc db
-          :advertisers response
-          :loading? false)))
+ (fn [{:keys [db]} [_ response]]
+   (let [[sort-name reverse?]
+         (get-url-search-params)]
+     {:fx [[:dispatch
+            [::sort-advertisers (keyword sort-name) reverse?]]]
+      :db (assoc db
+                 :advertisers response
+                 :loading? false)})))
 
 (re-frame/reg-event-db
  ::failure-fetch-advertisers
@@ -31,18 +46,45 @@
    (assoc db :error-state?
           true)))
 
-(re-frame/reg-event-db
+(re-frame/reg-event-fx
+ ::update-current-path
+ (fn
+   [_ [_ sort-name value overide?]]
+   {:pre [(string? sort-name)
+          (string? value)]}
+   (let [current-url (js/URL. (.-URL js/document))
+         search-params (doto (js/URLSearchParams.) (.set sort-name value))
+         url (js/URL. (str (if overide?
+                             (str
+                              (.-origin current-url)
+                              (.-pathname current-url))
+                             (.-URL js/document))
+                           (when (seq sort-name)
+                             (str (if overide?
+                                    "?"
+                                    "&")
+                                  (.toString search-params)))
+                           (.-hash current-url)))]
+     (-> js/window
+         .-history
+         (.replaceState {} "" url.href)))))
+
+(re-frame/reg-event-fx
  ::sort-advertisers
- (fn [db [_ sort-field]]
-   (assoc db
-          :reverse-sort (not (:reverse-sort db))
-          :advertisers
-          (sort-by sort-field
-                   (if-not (:reverse-sort db)
-                     >
-                     <)
-                   (:advertisers db))
-          :sort-field sort-field)))
+ (fn [{:keys [db]} [_ sort-field reverse?]]
+   (when sort-field
+     (let [reverse? (or (:reverse-sort db) reverse?)]
+       {:fx [[:dispatch [::update-current-path "sort-field" (name sort-field) true]]
+             [:dispatch [::update-current-path "reverse" (str (or reverse? false))]]]
+        :db (assoc db
+                   :reverse-sort (not reverse?)
+                   :advertisers
+                   (sort-by sort-field
+                            (if-not reverse?
+                              <
+                              >)
+                            (:advertisers db))
+                   :sort-field sort-field)}))))
 
 (comment
   (sort ["Rowe, Cormier and Bruen" "Homenick - Von" "Emmerich and Sons" "Schaden, Jenkins and Swift" "Dach - Kerluke" "Williamson Inc" "Beier - Hills" "Hermann LLC" "Abbott - Lang" "Jacobson Inc" "Effertz - Rutherford" "Zulauf - Willms" "Kertzmann Inc" "Ortiz, Heller and Tremblay" "McClure - Harris"])
@@ -54,20 +96,28 @@
   (first (filter #(= "1" (:advertiserId %))
                  @(re-frame/subscribe [::subs/add-statistics]))))
 
+(comment (let [reverse? ""]
+           (condp = reverse?
+             "false" false
+             "true" true
+             false)))
 
-(re-frame/reg-event-db
+(re-frame/reg-event-fx
  ::success-fetch-ad-statistics
- (fn [db [_ response]]
-   (assoc db
-          :statistics response
-          :stats-loading? false)))
+ (fn [{:keys [db]} [_ response]]
+   (let [[sort-name reverse?]
+         (get-url-search-params)]
+     {:fx [#_[:dispatch
+              [::sort-advertisers (:keyword sort-name) reverse?]]]
+      :db (assoc db
+                 :statistics response
+                 :stats-loading? false)})))
 
 (re-frame/reg-event-db
  ::failure-fetch-ad-statistics
  (fn [db [_ _response]]
    (assoc db :stats-error-state?
           true)))
-
 
 (re-frame/reg-event-fx
  ::fetch-ad-statistics

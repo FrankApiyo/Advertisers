@@ -3,8 +3,6 @@
             [advertisers.events :as events]
             [advertisers.subs :as subs]))
 
-;; TODO: sorting state is saved in URL
-
 (defn table []
   (let [advertisers @(re-frame/subscribe
                       [::subs/enriched-advertisers])
@@ -19,7 +17,7 @@
        [:th {:class "border border-[#343434]-600 text-justify"
              :on-click #(re-frame/dispatch
                          [::events/sort-advertisers :name])}
-        "ADVERTISERS"]
+        "ADVERTISER"]
        [:th {:class "border border-[#343434]-600 text-justify"
              :on-click #(re-frame/dispatch
                          [::events/sort-advertisers :createdAt])}
