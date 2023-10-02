@@ -37,11 +37,18 @@
    (assoc db
           :reverse-sort (not (:reverse-sort db))
           :advertisers
-          (sort sort-field (:advertisers db))
+          (sort-by sort-field
+                   (if-not (:reverse-sort db)
+                     >
+                     <)
+                   (:advertisers db))
           :sort-field sort-field)))
 
 (comment
-  @(re-frame/subscribe [::subs/advertisers])
+  (sort ["Rowe, Cormier and Bruen" "Homenick - Von" "Emmerich and Sons" "Schaden, Jenkins and Swift" "Dach - Kerluke" "Williamson Inc" "Beier - Hills" "Hermann LLC" "Abbott - Lang" "Jacobson Inc" "Effertz - Rutherford" "Zulauf - Willms" "Kertzmann Inc" "Ortiz, Heller and Tremblay" "McClure - Harris"])
+  (mapv
+   :name
+   (sort-by :name (vec @(re-frame/subscribe [::subs/advertisers]))))
   ;; (enrich-advertisers @(re-frame/subscribe [::subs/advertisers])
   ;;                     @(re-frame/subscribe [::subs/add-statistics]))
   (first (filter #(= "1" (:advertiserId %))
