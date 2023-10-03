@@ -63,7 +63,6 @@
                advertisers)))]]))
 
 (defn overview []
-  [:div {:class "flex min-w-full flex-col text-slate-300"}
-   [:p "Overview of advertisers"]
-   [:br]
+  [:div {:class "flex min-w-full flex-col text-slate-300 divide-slate-10"}
+   [:p {:class "w-11/12 m-5"} "Overview of advertisers"]
    [table]])
