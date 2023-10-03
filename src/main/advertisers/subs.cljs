@@ -33,3 +33,13 @@
  ::enriched-advertisers
  (fn [db]
    (:enriched-advertisers db)))
+
+(re-frame/reg-sub
+ ::reverse-sort
+ (fn [db]
+   (:reverse-sort db)))
+
+(re-frame/reg-sub
+ ::sort-field
+ (fn [db]
+   (:sort-field db)))

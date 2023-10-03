@@ -3,6 +3,18 @@
             [advertisers.events :as events]
             [advertisers.subs :as subs]))
 
+(defn sorting-with-column
+  "Conditionally return v or ^ depending on direction of sorting"
+  [this-field]
+  (let [reverse-sort @(re-frame/subscribe
+                       [::subs/reverse-sort])
+        sort-field @(re-frame/subscribe
+                     [::subs/sort-field])]
+    (when (= this-field sort-field)
+      (if reverse-sort
+        " ^"
+        " v"))))
+
 (defn table []
   (let [advertisers @(re-frame/subscribe
                       [::subs/enriched-advertisers])
@@ -17,23 +29,23 @@
        [:th {:class "border border-[#343434]-600 text-justify"
              :on-click #(re-frame/dispatch
                          [::events/sort-advertisers :name])}
-        "ADVERTISER"]
+        "ADVERTISER" (sorting-with-column :name)]
        [:th {:class "border border-[#343434]-600 text-justify"
              :on-click #(re-frame/dispatch
                          [::events/sort-advertisers :createdAt])}
-        "CREATION DATA"]
+        "CREATION DATA" (sorting-with-column :createdAt)]
        [:th {:class "border border-[#343434]-600 text-justify"
              :on-click #(re-frame/dispatch
                          [::events/sort-advertisers :campaign-id-count])}
-        "# CAMPAIGNS"]
+        "# CAMPAIGNS" (sorting-with-column :campaign-id-count)]
        [:th {:class "border border-[#343434]-600 text-justify"
              :on-click #(re-frame/dispatch
                          [::events/sort-advertisers :impressions])}
-        "IMPRESSIONS"]
+        "IMPRESSIONS" (sorting-with-column :impressions)]
        [:th {:class "border border-[#343434]-600 text-justify"
              :on-click #(re-frame/dispatch
                          [::events/sort-advertisers :clicks])}
-        "CLICKS"]]]
+        "CLICKS" (sorting-with-column :clicks)]]]
      [:tbody
       (cond
         error-state?
