@@ -11,7 +11,7 @@
         error-state?
         @(re-frame/subscribe
           [::subs/error-state?])]
-    [:table {:class "bg-[#222] border-collapse border border-slate-500 w-11/12 m-5 text-justify border-collapse"}
+    [:table {:class "bg-[#222] border-collapse border border-slate-500 w-11/12 m-5 mt-0.2 text-justify border-collapse"}
      [:thead {:class "cursor-pointer"}
       [:tr
        [:th {:class "border border-[#343434]-600 text-justify"
@@ -63,6 +63,7 @@
                advertisers)))]]))
 
 (defn overview []
-  [:div {:class "flex min-w-full flex-col text-slate-300 divide-slate-10"}
-   [:p {:class "w-11/12 m-5"} "Overview of advertisers"]
-   [table]])
+  [:div {:class "flex min-w-full flex-col text-slate-300 justify-center items-center"}
+   [:div {:class "flex flex-col m-5 text-slate-300 w-11/12 border-slate-700 border-y-2 border-x-2 justify-center items-center bg-[#222]"}
+    [:p {:class "w-11/12 m-5 p-4 border-b-slate-700 border-b-2"} "Overview of dvertisers"]
+    [table]]])
