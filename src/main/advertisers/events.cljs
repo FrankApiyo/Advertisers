@@ -102,10 +102,11 @@
 (defn enrich-advertisers
   [advertisers stats]
   (mapv
-   (fn [{:keys [id] :as advertiser}]
+   (fn [{:keys [id campaignIds] :as advertiser}]
      (let [stats-for-id (first (filter #(= id (:advertiserId %))
                                        stats))]
-       (merge stats-for-id advertiser)))
+       (assoc (merge stats-for-id advertiser)
+              :campaign-id-count (count campaignIds))))
    advertisers))
 
 (re-frame/reg-event-fx

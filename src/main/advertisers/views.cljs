@@ -24,7 +24,7 @@
         "CREATION DATA"]
        [:th {:class "border border-[#343434]-600 text-justify"
              :on-click #(re-frame/dispatch
-                         [::events/sort-advertisers :campaignIds])}
+                         [::events/sort-advertisers :campaign-id-count])}
         "# CAMPAIGNS"]
        [:th {:class "border border-[#343434]-600 text-justify"
              :on-click #(re-frame/dispatch
